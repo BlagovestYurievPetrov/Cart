@@ -1,17 +1,25 @@
 package products;
 
+import static util.ExceptionMessages.PRICE_POSITIVE;
+import static util.ExceptionMessages.QUANTITY_POSITIVE;
+
 public abstract class BaseProduct {
     private String name;
-    private Double price;
-    private Integer quantity;
-    private final Integer initialQuantity;
+    private double price;
+    private int quantity;
+    private final int initialQuantity;
 
 
-    protected BaseProduct(String name, Double price, Integer quantity) {
+    protected BaseProduct(String name, double price, int quantity) {
         this.name = name;
-        this.price = price;
-        this.quantity = quantity;
+        this.setPrice(price);
+        this.setQuantity(quantity);
         this.initialQuantity = quantity;
+    }
+
+
+    public void increaseQuantity(int increase) {
+        this.quantity = this.quantity + increase;
     }
 
     public String getName() {
@@ -26,19 +34,25 @@ public abstract class BaseProduct {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(double price) {
+        if (price < 0.0) {
+            throw new IllegalArgumentException(PRICE_POSITIVE);
+        }
         this.price = price;
     }
 
-    public Integer getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
+        if(quantity < 1){
+            throw new IllegalArgumentException(QUANTITY_POSITIVE);
+        }
         this.quantity = quantity;
     }
 
-    public Integer getInitialQuantity() {
+    public int getInitialQuantity() {
         return initialQuantity;
     }
 }

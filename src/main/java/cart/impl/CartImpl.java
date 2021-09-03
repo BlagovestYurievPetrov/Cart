@@ -1,21 +1,24 @@
-import products.BaseProduct;
+package cart.impl;
 
-import java.math.BigDecimal;
+import cart.Cart;
+import products.BaseProduct;
+import static util.ExceptionMessages.CANNOT_REMOVE_PRODUCT;
+import static util.Variables.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-public class Cart {
+public class CartImpl implements Cart {
     private final List<BaseProduct> products;
-    private Double totalSum;
+    private double totalSum;
 
-    public Cart() {
+    public CartImpl() {
         this.products = new ArrayList<>();
         this.totalSum = 0.0;
     }
 
 
     public void add(BaseProduct product) {
+        //If adding an existing product. The quantity will be increased by the initial amount of the product.
         boolean doesProductExist = this.products.contains(product);
         if (doesProductExist) {
             int index = this.products.indexOf(product);
@@ -30,7 +33,7 @@ public class Cart {
     public void remove(BaseProduct product) {
         boolean doesProductExist = this.products.contains(product);
         if (!doesProductExist) {
-            throw new IllegalArgumentException(String.format("You cannot remove %s, since it is not contained in the cart.", product.getName()));
+            throw new IllegalArgumentException(CANNOT_REMOVE_PRODUCT);
         }
         this.products.remove(product);
     }
@@ -42,19 +45,21 @@ public class Cart {
         this.products.forEach(product -> {
             int numberOfItemsWithTheSameClass = getNumberOfItemsWithTheSameClass(cartClasses, product);
             if (numberOfItemsWithTheSameClass > 1 || product.getQuantity() > 1) {
-                this.totalSum += product.getPrice() * 0.9 * product.getQuantity();
+                this.totalSum += product.getPrice() * (1 - DISCOUNT_FOR_PRODUCTS_OF_SAME_TYPE) * product.getQuantity();
             } else {
                 this.totalSum += product.getPrice() * product.getQuantity();
             }
         });
-        return this.totalSum > 100.00 ? this.totalSum * 0.9 : this.totalSum;
+
+        return this.totalSum > CART_THRESHOLD_FOR_DISCOUNT ?
+                this.totalSum * (1 - DISCOUNT_FOR_EXCEEDING_THRESHOLD) : this.totalSum;
     }
 
     private int getNumberOfItemsWithTheSameClass(List<String> cartClasses, BaseProduct product) {
         // Return the amount of times a certain class is repeated in the shopping cart
         int counter = 0;
         for (String cartClass : cartClasses) {
-            if(cartClass.equals(product.getClass().getSimpleName())){
+            if (cartClass.equals(product.getClass().getSimpleName())) {
                 counter++;
             }
         }
@@ -64,7 +69,7 @@ public class Cart {
     private List<String> getAllClassesInShoppingCart() {
         //This method returns a List of all class names in the shopping cart
         List<String> cartClasses = new ArrayList<>();
-        this.products.forEach(pr-> {
+        this.products.forEach(pr -> {
             cartClasses.add(pr.getClass().getSimpleName());
         });
         return cartClasses;
