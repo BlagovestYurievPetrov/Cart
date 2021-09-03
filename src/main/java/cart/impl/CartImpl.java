@@ -69,9 +69,7 @@ public class CartImpl implements Cart {
     private List<String> getAllClassesInShoppingCart() {
         //This method returns a List of all class names in the shopping cart
         List<String> cartClasses = new ArrayList<>();
-        this.products.forEach(pr -> {
-            cartClasses.add(pr.getClass().getSimpleName());
-        });
+        this.products.forEach(pr -> cartClasses.add(pr.getClass().getSimpleName()));
         return cartClasses;
     }
 
