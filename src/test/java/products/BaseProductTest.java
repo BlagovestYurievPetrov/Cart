@@ -30,6 +30,11 @@ public class BaseProductTest {
     }
 
     @Test (expected = IllegalArgumentException.class)
+    public void enterInvalidName(){
+        Soap dove = new Soap("d", 20.00, 1);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
     public void enterInvalidQuantity(){
         Soap dove = new Soap("dove", 20.00, -1);
     }

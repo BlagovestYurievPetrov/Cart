@@ -1,7 +1,6 @@
 package products;
 
-import static util.ExceptionMessages.PRICE_POSITIVE;
-import static util.ExceptionMessages.QUANTITY_POSITIVE;
+import static util.ExceptionMessages.*;
 
 public abstract class BaseProduct {
     private String name;
@@ -11,7 +10,7 @@ public abstract class BaseProduct {
 
 
     protected BaseProduct(String name, double price, int quantity) {
-        this.name = name;
+        this.setName(name);
         this.setPrice(price);
         this.setQuantity(quantity);
         this.initialQuantity = quantity;
@@ -23,36 +22,49 @@ public abstract class BaseProduct {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
+        if (name.length() < 2) {
+            throw new IllegalArgumentException(INVALID_NAME_MESSAGE);
+        }
         this.name = name;
     }
 
     public Double getPrice() {
-        return price;
+        return this.price;
     }
 
-    public void setPrice(double price) {
+    private void setPrice(double price) {
         if (price < 0.0) {
-            throw new IllegalArgumentException(PRICE_POSITIVE);
+            throw new IllegalArgumentException(PRICE_POSITIVE_MESSAGE);
         }
         this.price = price;
     }
 
     public int getQuantity() {
-        return quantity;
+        return this.quantity;
     }
 
     public void setQuantity(int quantity) {
-        if(quantity < 1){
-            throw new IllegalArgumentException(QUANTITY_POSITIVE);
+        if (quantity < 1) {
+            throw new IllegalArgumentException(QUANTITY_POSITIVE_MESSAGE);
         }
         this.quantity = quantity;
     }
 
     public int getInitialQuantity() {
-        return initialQuantity;
+        return this.initialQuantity;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseProduct{" +
+                "name='" + name + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", initialQuantity=" + initialQuantity +
+                '}';
     }
 }

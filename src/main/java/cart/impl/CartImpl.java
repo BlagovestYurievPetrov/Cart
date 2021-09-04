@@ -7,7 +7,7 @@ import static util.Variables.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CartImpl implements Cart {
+public final class CartImpl implements Cart {
     private final List<BaseProduct> products;
     private double totalSum;
 
@@ -74,6 +74,6 @@ public class CartImpl implements Cart {
     }
 
     public List<BaseProduct> getProducts() {
-        return products;
+        return new ArrayList<>(products);
     }
 }
