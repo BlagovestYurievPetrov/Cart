@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 
 import static util.ExceptionMessages.*;
 
+/**
+ * Base abstract class to be extended by products of different
+ * types who could be added to the shopping cart.
+ */
 public abstract class BaseProduct {
     private String name;
     private BigDecimal price;
@@ -18,13 +22,19 @@ public abstract class BaseProduct {
         this.initialQuantity = quantity;
     }
 
-
+    /**
+     * Increases the quantity of the product.
+     *
+     * @param increase Integer value representing the amount that will
+     *                 be added to the quantity of the product.
+     * @throws IllegalArgumentException When the provided parameter is
+     *                                  zero or a negative integer.
+     */
     public void increaseQuantity(int increase) {
+        if (increase < 1) {
+            throw new IllegalArgumentException(QUANTITY_POSITIVE_MESSAGE);
+        }
         this.quantity = this.quantity + increase;
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     private void setName(String name) {

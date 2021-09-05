@@ -10,6 +10,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Stores cart data and performs add, remove
+ * and calculation of cart sum functionalities.
+ */
 public final class CartImpl implements Cart {
     private final List<BaseProduct> products;
     private BigDecimal totalSum;
@@ -19,9 +23,14 @@ public final class CartImpl implements Cart {
         this.totalSum = BigDecimal.ZERO;
     }
 
-
+    /**
+     * Adds products to the cart. In case a product is already contained
+     * in the cart it increases it's quantity by the initial quantity of
+     * the instance.
+     *
+     * @param product One of the classes extending BaseProduct.
+     */
     public void add(BaseProduct product) {
-        //If adding an existing product. The quantity will be increased by the initial amount of the product.
         boolean doesProductExist = this.products.contains(product);
         if (doesProductExist) {
             int index = this.products.indexOf(product);
@@ -32,7 +41,13 @@ public final class CartImpl implements Cart {
         this.products.add(product);
     }
 
-
+    /**
+     * Removes a product from the cart.
+     *
+     * @param product One of the classes extending BaseProduct.
+     * @throws IllegalArgumentException - If the product received
+     *                                  as a parameter is not in the cart.
+     */
     public void remove(BaseProduct product) {
         boolean doesProductExist = this.products.contains(product);
         if (!doesProductExist) {
@@ -41,8 +56,15 @@ public final class CartImpl implements Cart {
         this.products.remove(product);
     }
 
+    /**
+     * Calculates the total sum of the cart. Applies discount in case there
+     * are products of the same type or multiple copies of the same product.
+     * Also applies additional discount if a certain threshold is exceeded.
+     *
+     * @return BigDecimal value representing the total sum of the cart
+     * after all discounts have been taken in consideration.
+     */
     public BigDecimal getSum() {
-        //Collect all classes in the cart
         List<String> cartClasses = getAllClassesInShoppingCart();
 
         this.products.forEach(product -> {
@@ -58,11 +80,20 @@ public final class CartImpl implements Cart {
 
         int comparison = this.totalSum.compareTo(CART_THRESHOLD_FOR_DISCOUNT);
         return comparison > 0 ?
-        this.totalSum.multiply(BigDecimal.valueOf(1 - DISCOUNT_FOR_EXCEEDING_THRESHOLD_PERCENTAGE)) : this.totalSum;
+                this.totalSum.multiply(BigDecimal.valueOf(1 - DISCOUNT_FOR_EXCEEDING_THRESHOLD_PERCENTAGE)) : this.totalSum;
     }
 
+    /**
+     * Calculates the amount of times a certain class (product type) is
+     * repeated in the shopping cart. This can be used to calculate whether
+     * the price discount applies to the said product or not.
+     *
+     * @param cartClasses a List of all class names in the shopping cart.
+     * @param product     One of the classes extending BaseProduct.
+     * @return Integer value of the amount of times a product type is repeated
+     * in the shopping cart.
+     */
     private int getNumberOfItemsWithTheSameClass(List<String> cartClasses, BaseProduct product) {
-        // Return the amount of times a certain class is repeated in the shopping cart
         int counter = 0;
         for (String cartClass : cartClasses) {
             if (cartClass.equals(product.getClass().getSimpleName())) {
@@ -72,12 +103,17 @@ public final class CartImpl implements Cart {
         return counter;
     }
 
+    /**
+     * Fills a List with all class names (types of products) and returns it.
+     *
+     * @return a List of all class names in the shopping cart.
+     */
     private List<String> getAllClassesInShoppingCart() {
-        //This method returns a List of all class names in the shopping cart
         List<String> cartClasses = new ArrayList<>();
         this.products.forEach(pr -> cartClasses.add(pr.getClass().getSimpleName()));
         return cartClasses;
     }
+
 
     public List<BaseProduct> getProducts() {
         return new ArrayList<>(products);
