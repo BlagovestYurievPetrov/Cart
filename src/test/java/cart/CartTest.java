@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 import products.*;
 
+import java.math.BigDecimal;
+
 
 public class CartTest {
     private CartImpl cart;
@@ -36,10 +38,17 @@ public class CartTest {
     }
 
     @Test
-    public void addingExistingProductToCart() {
+    public void addingExistingProductToCartIncreasesQuantity() {
         this.cart.add(teo);
         this.cart.add(teo);
         Assert.assertEquals(2, teo.getQuantity());
+    }
+
+    @Test
+    public void addingExistingProductToCartDoesNotAffectSize() {
+        this.cart.add(teo);
+        this.cart.add(teo);
+        Assert.assertEquals(1, this.cart.getProducts().size());
     }
 
     @Test
@@ -57,41 +66,41 @@ public class CartTest {
     @Test
     public void discountForSameProductWithBiggerQuantity() {
         this.cart.add(dove);
-        Assert.assertEquals(36.00, this.cart.getSum(), 0);
+        Assert.assertEquals(0,BigDecimal.valueOf(36.00).compareTo(this.cart.getSum()));
     }
 
     @Test
     public void discountForContainingTwoProductsOfTheSameType() {
         this.cart.add(teo);
         this.cart.add(max);
-        Assert.assertEquals(18.00, this.cart.getSum(), 0);
+        Assert.assertEquals(0, BigDecimal.valueOf(18.00).compareTo(this.cart.getSum()));
     }
 
     @Test
     public void discountForTwoProductsOfSameTypeAndBigQuantities() {
         this.cart.add(dove);
         this.cart.add(palmolive);
-        Assert.assertEquals(72.00, this.cart.getSum(), 0);
+        Assert.assertEquals(0, BigDecimal.valueOf(72.00).compareTo(this.cart.getSum()));
     }
 
     @Test
     public void sumForTwoProductsOfDifferentTypesWithoutDiscount() {
         this.cart.add(teo);
         this.cart.add(rex);
-        Assert.assertEquals(30.00, this.cart.getSum(), 0);
+        Assert.assertEquals(0,BigDecimal.valueOf(30.00).compareTo(this.cart.getSum()));
     }
 
     @Test
     public void discountAppliedOnlyToProductWithGreaterQuantity() {
         this.cart.add(dove);
         this.cart.add(rex);
-        Assert.assertEquals(56.00, this.cart.getSum(), 0);
+        Assert.assertEquals(0, BigDecimal.valueOf(56.00).compareTo(this.cart.getSum()));
     }
 
     @Test
     public void discountAppliedByExceedingDiscountThresholdForTotalSum() {
         this.cart.add(hs);
-        Assert.assertEquals(108.00, this.cart.getSum(), 0);
+        Assert.assertEquals(0, BigDecimal.valueOf(108.00).compareTo(this.cart.getSum()));
     }
 
     @Test
@@ -100,6 +109,6 @@ public class CartTest {
         this.cart.add(dove);
         this.cart.add(max);
         this.cart.add(washAndGo);
-        Assert.assertEquals(180.90, this.cart.getSum(), 0);
+        Assert.assertEquals(0, BigDecimal.valueOf(180.90).compareTo(this.cart.getSum()));
     }
 }

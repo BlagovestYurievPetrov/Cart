@@ -2,18 +2,21 @@ package cart.impl;
 
 import cart.Cart;
 import products.BaseProduct;
+
 import static util.ExceptionMessages.CANNOT_REMOVE_PRODUCT;
 import static util.Variables.*;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class CartImpl implements Cart {
     private final List<BaseProduct> products;
-    private double totalSum;
+    private BigDecimal totalSum;
 
     public CartImpl() {
         this.products = new ArrayList<>();
-        this.totalSum = 0.0;
+        this.totalSum = BigDecimal.ZERO;
     }
 
 
@@ -38,21 +41,24 @@ public final class CartImpl implements Cart {
         this.products.remove(product);
     }
 
-    public Double getSum() {
+    public BigDecimal getSum() {
         //Collect all classes in the cart
         List<String> cartClasses = getAllClassesInShoppingCart();
 
         this.products.forEach(product -> {
             int numberOfItemsWithTheSameClass = getNumberOfItemsWithTheSameClass(cartClasses, product);
             if (numberOfItemsWithTheSameClass > 1 || product.getQuantity() > 1) {
-                this.totalSum += product.getPrice() * (1 - DISCOUNT_FOR_PRODUCTS_OF_SAME_TYPE) * product.getQuantity();
+                BigDecimal result = product.getPrice().multiply(BigDecimal.valueOf(((1 - DISCOUNT_FOR_PRODUCTS_OF_SAME_TYPE_PERCENTAGE) * product.getQuantity())));
+                this.totalSum = this.totalSum.add(result);
             } else {
-                this.totalSum += product.getPrice() * product.getQuantity();
+                BigDecimal multiply = product.getPrice().multiply(BigDecimal.valueOf(product.getQuantity()));
+                this.totalSum = this.totalSum.add(multiply);
             }
         });
 
-        return this.totalSum > CART_THRESHOLD_FOR_DISCOUNT ?
-                this.totalSum * (1 - DISCOUNT_FOR_EXCEEDING_THRESHOLD) : this.totalSum;
+        int comparison = this.totalSum.compareTo(CART_THRESHOLD_FOR_DISCOUNT);
+        return comparison > 0 ?
+        this.totalSum.multiply(BigDecimal.valueOf(1 - DISCOUNT_FOR_EXCEEDING_THRESHOLD_PERCENTAGE)) : this.totalSum;
     }
 
     private int getNumberOfItemsWithTheSameClass(List<String> cartClasses, BaseProduct product) {

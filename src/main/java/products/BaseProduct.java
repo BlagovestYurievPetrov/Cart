@@ -1,10 +1,12 @@
 package products;
 
+import java.math.BigDecimal;
+
 import static util.ExceptionMessages.*;
 
 public abstract class BaseProduct {
     private String name;
-    private double price;
+    private BigDecimal price;
     private int quantity;
     private final int initialQuantity;
 
@@ -32,15 +34,15 @@ public abstract class BaseProduct {
         this.name = name;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return this.price;
     }
 
     private void setPrice(double price) {
-        if (price < 0.0) {
+        if (price <= 0.0) {
             throw new IllegalArgumentException(PRICE_POSITIVE_MESSAGE);
         }
-        this.price = price;
+        this.price = BigDecimal.valueOf(price);
     }
 
     public int getQuantity() {
