@@ -8,7 +8,7 @@ import static util.ExceptionMessages.*;
  * Base abstract class to be extended by products of different
  * types who could be added to the shopping cart.
  */
-public abstract class BaseProduct {
+public class BaseProduct {
     private String name;
     private BigDecimal price;
     private int quantity;
