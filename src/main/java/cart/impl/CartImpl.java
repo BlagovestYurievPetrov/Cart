@@ -30,6 +30,9 @@ public final class CartImpl implements Cart {
      *
      * @param product One of the classes extending BaseProduct.
      */
+
+
+    @Override
     public void add(BaseProduct product) {
         boolean doesProductExist = this.products.contains(product);
         if (doesProductExist) {
@@ -48,6 +51,7 @@ public final class CartImpl implements Cart {
      * @throws IllegalArgumentException - If the product received
      *                                  as a parameter is not in the cart.
      */
+    @Override
     public void remove(BaseProduct product) {
         boolean doesProductExist = this.products.contains(product);
         if (!doesProductExist) {
@@ -64,6 +68,7 @@ public final class CartImpl implements Cart {
      * @return BigDecimal value representing the total sum of the cart
      * after all discounts have been taken in consideration.
      */
+    @Override
     public BigDecimal getSum() {
         List<String> cartClasses = getAllClassesInShoppingCart();
 
